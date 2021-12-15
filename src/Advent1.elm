@@ -1,6 +1,6 @@
 module Advent1 exposing (..)
 
-import Depths exposing (depths)
+import Depths exposing (depthsFinal)
 
 
 countOfIncreases : List Int -> Int -> Int
@@ -26,4 +26,4 @@ countOfIncreases list count =
 
 test : Int
 test =
-    countOfIncreases depths 0
+    countOfIncreases depthsFinal 0
