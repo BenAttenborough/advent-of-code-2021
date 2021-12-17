@@ -1,5 +1,11 @@
 module Directions exposing (..)
 
+import Maybe exposing (andThen)
+
+
+
+-- See https://thoughtbot.com/blog/maybe-mechanics
+
 
 directions : String
 directions =
@@ -11,17 +17,52 @@ down 8
 forward 2"""
 
 
-splitInstructions : String -> ( String, String )
+type Order
+    = Up
+    | Down
+    | Forward
+    | Back
+
+
+parseOrder : String -> Maybe Order
+parseOrder order =
+    case order of
+        "up" ->
+            Just Up
+
+        "down" ->
+            Just Down
+
+        "forward" ->
+            Just Forward
+
+        "back" ->
+            Just Back
+
+        _ ->
+            Nothing
+
+
+splitInstructions : String -> Maybe ( String, Int )
 splitInstructions string =
-    String.words string
+    let
+        words =
+            String.words string
+    in
+    case words of
+        [ a, b ] ->
+            Maybe.map (\amount -> ( a, amount )) (String.toInt b)
+
+        _ ->
+            Nothing
 
 
-parseDirections : String -> List String
+parseDirections : String -> List ( String, Int )
 parseDirections string =
     String.lines string
-        |> List.map (\instruction -> String.words instruction)
+        |> List.filterMap splitInstructions
 
 
-test : List String
+test : List ( String, Int )
 test =
     parseDirections directions
