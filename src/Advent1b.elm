@@ -1,4 +1,4 @@
-module Advent2 exposing (..)
+module Advent1b exposing (..)
 
 -- import Advent1 exposing (countOfIncreases)
 

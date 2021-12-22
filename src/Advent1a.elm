@@ -1,4 +1,4 @@
-module Advent1 exposing (..)
+module Advent1a exposing (..)
 
 import Depths exposing (depthsFinal)
 

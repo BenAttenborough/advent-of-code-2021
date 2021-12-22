@@ -1,15 +1,14 @@
-module Advent2a exposing (..)
+module Advent2b exposing (..)
 
 -- See https://thoughtbot.com/blog/maybe-mechanics
 
-import Directions exposing (directions)
+import Directions exposing (directions, directionsSample)
 
 
 type Order
     = Up Int
     | Down Int
     | Forward Int
-    | Back Int
 
 
 parseOrder : String -> Int -> Maybe Order
@@ -23,9 +22,6 @@ parseOrder order amount =
 
         "forward" ->
             Just (Forward amount)
-
-        "back" ->
-            Just (Back amount)
 
         _ ->
             Nothing
@@ -52,36 +48,41 @@ parseDirections string =
         |> List.filterMap convertLinesToOrders
 
 
-executeOrders : ( Int, Int ) -> List Order -> ( Int, Int )
-executeOrders position orders =
-    let
-        x =
-            Tuple.first position
-
-        y =
-            Tuple.second position
-    in
+executeOrders : State -> List Order -> State
+executeOrders state orders =
     case orders of
         [] ->
-            position
+            state
 
         first :: rest ->
             case first of
                 Up val ->
-                    executeOrders ( x, y - val ) rest
+                    executeOrders { state | aim = state.aim - val } rest
 
                 Down val ->
-                    executeOrders ( x, y + val ) rest
+                    executeOrders { state | aim = state.aim + val } rest
 
                 Forward val ->
-                    executeOrders ( x + val, y ) rest
+                    executeOrders { state | x = state.x + val, y = state.y + (state.aim * val) } rest
 
-                Back val ->
-                    executeOrders ( x - val, y ) rest
+
+type alias State =
+    { x : Int
+    , y : Int
+    , aim : Int
+    }
 
 
 test : Int
 test =
+    let
+        state =
+            State 0 0 0
+    in
     parseDirections directions
-        |> executeOrders ( 0, 0 )
-        |> (\val -> Tuple.first val * Tuple.second val)
+        |> executeOrders state
+        |> (\result -> result.x * result.y)
+
+
+
+-- |> (\val -> Tuple.first val * Tuple.second val)
